@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
+import Button from './components/button/button.js';
 
 class App extends Component {
   render() {
@@ -19,6 +20,9 @@ class App extends Component {
           >
             Learn React
           </a>
+
+          <Button title="Create New Game" color="yellow">CREATE NEW GAME!</Button>
+          <Button title="Join a Game" color="yellow">JOIN A GAME!</Button>
         </header>
       </div>
     );
