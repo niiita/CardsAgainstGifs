@@ -1,1 +1,1 @@
-export { default } from './room-screen'
+export { default } from "./room-screen";

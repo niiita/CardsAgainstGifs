@@ -1,1 +1,1 @@
-export { default } from "./section-component"
+export { default } from "./section-component";

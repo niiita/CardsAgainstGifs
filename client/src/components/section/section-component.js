@@ -1,4 +1,4 @@
-import styled from "styled-components"
+import styled from "styled-components";
 import {
   alignItems,
   flex,
@@ -6,8 +6,8 @@ import {
   flexWrap,
   justifyContent,
   space,
-  width,
-} from "styled-system"
+  width
+} from "styled-system";
 
 export default styled.div`
   ${space};
@@ -19,8 +19,6 @@ export default styled.div`
   ${flex};
   ${flexWrap};
   position: relative;
-  overflow-y: ${({ overflowY }) =>
-    overflowY || "initial"};
-  overflow-x: ${({ overflowX }) =>
-    overflowX || "initial"};
-`
+  overflow-y: ${({ overflowY }) => overflowY || "initial"};
+  overflow-x: ${({ overflowX }) => overflowX || "initial"};
+`;
