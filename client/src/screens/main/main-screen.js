@@ -12,6 +12,15 @@ class MainScreen extends React.PureComponent {
         }}
         alignItems="center"
       >
+        <header>Welcome to Gifs Against Humanity :)</header>
+        <form>
+          <label>
+            Name: <input type="text" name="name" />
+            <br />
+            Room: <input type="text" name="name" />
+          </label>
+        </form>
+
         <Button title="Create New Game" color="yellow">
           CREATE NEW GAME!
         </Button>
