@@ -1,6 +1,8 @@
 import * as React from "react";
 import Section from "../../components/section";
 import Button from "../../components/button";
+import IFrame from "../../components/card-gif";
+import CAHcard from "../../components/cards-against-humanity";
 
 class MainScreen extends React.PureComponent {
   render() {
@@ -12,6 +14,8 @@ class MainScreen extends React.PureComponent {
         }}
         alignItems="center"
       >
+        <CAHcard line="some random card" />
+        <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
         <header>Welcome to Gifs Against Humanity :)</header>
         <form>
           <label>
