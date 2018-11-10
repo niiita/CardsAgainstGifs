@@ -6,7 +6,9 @@ import { Redirect } from "react-router";
 
 class CreateRoomComponent extends React.Component {
   state = {
-    name: ""
+    name: "",
+    redirect: false,
+    roomID: ''
   };
 
   handleChange(event) {
@@ -15,12 +17,17 @@ class CreateRoomComponent extends React.Component {
 
   submit() {
     axios.get(`http://localhost:5000/api/room/create`).then(res => {
-      const roomID = res.data.room;
-      console.log(res);
+      const id = res.data.room;
+      this.setState({ roomID: id })
+      this.setState({ redirect: true })
     });
-    return <Redirect to="/room" />;
   }
   render() {
+    const { redirect, roomID } = this.state;
+
+    if (redirect) {
+      return <Redirect to={`/room?id=${roomID}`} />;
+    }
     return (
       <Section>
         <input
