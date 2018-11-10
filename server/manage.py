@@ -1,4 +1,4 @@
-from app import create_app
+from project import create_app
 from flask.cli import FlaskGroup
 
 app = create_app()
