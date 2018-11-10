@@ -8,7 +8,7 @@ class CreateRoomComponent extends React.Component {
   state = {
     name: "",
     redirect: false,
-    roomID: ''
+    roomID: ""
   };
 
   handleChange(event) {
@@ -18,8 +18,8 @@ class CreateRoomComponent extends React.Component {
   submit() {
     axios.get(`http://localhost:5000/api/room/create`).then(res => {
       const id = res.data.room;
-      this.setState({ roomID: id })
-      this.setState({ redirect: true })
+      this.setState({ roomID: id });
+      this.setState({ redirect: true });
     });
   }
   render() {
