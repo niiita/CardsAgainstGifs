@@ -19,7 +19,9 @@ def create_app(script_info=None):
 
 def setup_blueprints(app):
     from project.routes.views import views_bp
+    from project.routes.api import api_bp
     app.register_blueprint(views_bp)
+    app.register_blueprint(api_bp)
 
 
 def call_api():
