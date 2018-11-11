@@ -4,6 +4,8 @@ import IFrame from "../../components/card-gif";
 import socketIOClient from "socket.io-client";
 import { Button } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
+import CAHcard from "../../components/cards-against-humanity";
+import '../../index.css';
 
 class RoomScreen extends React.PureComponent {
   state = {
@@ -48,6 +50,7 @@ class RoomScreen extends React.PureComponent {
   render() {
     const { listOfUsers } = this.state;
     return (
+     
       <Section
         flexDirection="column"
         style={{
@@ -55,19 +58,36 @@ class RoomScreen extends React.PureComponent {
         }}
         alignItems="center"
       >
-        room
+        room: <br/>
         {listOfUsers && listOfUsers}
         {this.state.redirect && <Redirect to="/" />}
         <Section>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => this.leaveRoom()}
-          >
-            Leave
-          </Button>
+          
+          <div>
+          <CAHcard>
+            random prompt
+          </CAHcard>
+          </div>
+          
         </Section>
-      </Section>
+        
+       <Section class="flexWrap">
+          <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
+          <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
+          <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
+          <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
+          <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
+          </Section>
+
+      
+      <Button
+        variant="contained"
+        color="primary"
+        onClick={() => this.leaveRoom()}
+      >
+        Leave
+      </Button>
+   </Section>
     );
   }
 }
