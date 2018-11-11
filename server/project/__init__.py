@@ -38,7 +38,7 @@ def setup_blueprints(app):
 def call_api():
     import requests
     giphy_key = os.getenv('GIPHY_API_KEY')
-    limit = 100
+    limit = 200
     url = f'http://api.giphy.com/v1/gifs/trending?api_key={giphy_key}&limit={limit}'
 
     response = requests.get(url).json()

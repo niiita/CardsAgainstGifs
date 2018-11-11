@@ -20,12 +20,12 @@ class RoomScreen extends React.PureComponent {
     hand: [],
     usedGifs: [],
     captain: "",
-    userPick: '',
+    userPick: {},
     packet: {}
   };
 
   componentDidMount() {
-    const { socket } = this.state;
+    const { socket, userPick, hand } = this.state;
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get("id");
     const name = urlParams.get("name");
@@ -48,7 +48,44 @@ class RoomScreen extends React.PureComponent {
       });
     });
     socket.on('notify-winner', data => {
-      Swal(`Winner is ${data.msg}!`)
+      Swal({
+        title: `Winner is ${data.msg}!`,
+        showCancelButton: false,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Ok!'
+      }).then((result) => {
+        if (result.value) {
+          axios
+            .post("http://localhost:5000/api/room/hand/new", {
+              room: id,
+              user: name,
+              gif: this.state.userPick
+            })
+            .then(response => {
+              if (response.data.error.length > 0) {
+                alert(response.data.error);
+              } else {
+                const newGif = response.data.newGif;
+                if (newGif == '') {
+                  this.setState({ userPick: {} })
+                } else {
+                  let new_hand = this.state.hand.map(x => x);
+                  new_hand.push({
+                    'gif': newGif.gif,
+                    'id': newGif.id
+                  })
+                  new_hand = new_hand.filter((x) => x.id != this.state.userPick.id)
+                  this.setState({ hand: new_hand })
+                  this.setState({ userPick: {} })
+                }
+              }
+            })
+            .catch(error => {
+              console.log(error);
+            });
+        }
+      })
     })
   }
 
@@ -115,11 +152,6 @@ class RoomScreen extends React.PureComponent {
     }).then((result) => {
       if (result.value) {
         this.state.socket.emit("winner", { room: id, user: name, winner: winner });
-        // swal(
-        //   'Deleted!',
-        //   'Your file has been deleted.',
-        //   'success'
-        // )
       }
     })
   }
@@ -176,7 +208,7 @@ class RoomScreen extends React.PureComponent {
             >
               {listOfUsers &&
                 listOfUsers.map(x => (
-                  packet.captain === x ? 
+                  packet.captain === x ?
                     <li key={x} className="captain">{x} (captain)</li>
                     :
                     <li key={x}>{x}</li>

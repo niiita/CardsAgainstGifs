@@ -72,6 +72,31 @@ def user_select():
         return jsonify({'error': 'cannot post', 'selectedGif': ''})
 
 
+
+@api_bp.route('/room/hand/new', methods=["POST"])
+def new_gif():
+
+    import project.routes.sockets as socket_global
+
+    try: 
+        response = request.json
+        room = response['room']
+        user = response['user']
+        gif_dict = response['gif']
+
+        if len(gif_dict.keys()) == 0:
+            return jsonify({'error': '', 'newGif': ''})
+        
+        socket_global.ROOMS[room]['usedGifs'].append(gif_dict)
+        available_gifs = socket_global.ROOMS[room]['availableGifs']
+        id, url = available_gifs.popitem()
+        gif_dict = {'id': id, 'gif': url}
+        socket_global.ROOMS[room]['usedGifs'].append(gif_dict)
+        return jsonify({'error': '', 'newGif': gif_dict})
+    except Exception as msg:
+        print(msg)
+        return jsonify({'error': 'cannot post', 'newGif': ''})
+
 def create_unique_room():
     global UNIQUE_ROOMS
 
