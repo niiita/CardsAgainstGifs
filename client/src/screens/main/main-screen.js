@@ -1,6 +1,5 @@
 import * as React from "react";
 import Section from "../../components/section";
-import { redirect } from "react-router-dom";
 
 import CreateRoom from "../../components/create-room";
 import JoinRoom from "../../components/join-room";
