@@ -48,7 +48,7 @@ class MainScreen extends React.PureComponent {
           alignItems="center"
         >
           <Button
-            variant="raised"
+            variant="contained"
             color="primary"
             onClick={() => this.toggle("join")}
             style={{
@@ -58,7 +58,7 @@ class MainScreen extends React.PureComponent {
             Join Game
           </Button>
           <Button
-            variant="raised"
+            variant="contained"
             color="primary"
             onClick={() => this.toggle("create")}
           >
