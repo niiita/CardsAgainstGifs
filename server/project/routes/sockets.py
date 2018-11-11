@@ -58,7 +58,7 @@ def on_leave(data):
     room = data['room']
 
     if room in ROOMS and user in ROOMS[room]:
-        leave_room(room, user)
+        user_leave_room(room, user)
         emit('status', {'msg': ROOMS[room]}, room=room)
     else:
         print("very bad")
