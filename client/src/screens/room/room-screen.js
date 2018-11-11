@@ -47,6 +47,9 @@ class RoomScreen extends React.PureComponent {
       this.setState({
         captain: data.msg.captain
       });
+      this.setState({
+        scoreboard: data.scoreboard
+      })
     });
     socket.on('notify-winner', data => {
       Swal({
@@ -70,6 +73,8 @@ class RoomScreen extends React.PureComponent {
                 const newGif = response.data.newGif;
                 if (newGif == '') {
                   this.setState({ userPick: {} })
+                  this.setState({ scoreboard: data.scoreboard });
+                  console.log(this.state.scoreboard)
                 } else {
                   let new_hand = this.state.hand.map(x => x);
                   new_hand.push({
@@ -168,7 +173,8 @@ class RoomScreen extends React.PureComponent {
       captain,
       started,
       packet,
-      userPick
+      userPick,
+      scoreboard
     } = this.state;
     return (
       <Section
@@ -215,6 +221,25 @@ class RoomScreen extends React.PureComponent {
                     <li key={x} className="captain">{x} (captain)</li>
                     :
                     <li key={x}>{x}</li>
+                ))}
+            </ul>
+            <h3
+              style={{
+                textAlign: "right",
+                margin: "15px 0px 0px 0px"
+              }}
+            >
+              Score
+            </h3>
+            <ul
+              style={{
+                listStyleType: "none",
+                textAlign: "right",
+              }}
+            >
+              {scoreboard &&
+                Object.keys(scoreboard).map(x => (
+                    <li key={x}>{x}: {scoreboard[x]}</li>
                 ))}
             </ul>
           </Section>

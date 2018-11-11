@@ -16,6 +16,7 @@ def test_disconnect():
 @socketio.on('join', namespace='/')
 def on_join(data):
     global ROOMS
+    global SCOREBOARD
 
     room = data['room']
     user = data['user']
@@ -27,7 +28,9 @@ def on_join(data):
         print("very bad")
     else:
         user_join_room(room, user)
-        emit('status', {'msg': ROOMS[room]}, room=room)
+        if room not in SCOREBOARD:
+            SCOREBOARD[room] = {}
+        emit('status', {'msg': ROOMS[room], 'scoreboard': SCOREBOARD[room]}, room=room)
 
 @socketio.on('leave', namespace='/')
 def on_leave(data):
@@ -98,9 +101,10 @@ def user_leave_room(room, user):
 
 def update_scoreboard(room, winner):
     global SCOREBOARD
-
+    if room not in SCOREBOARD:
+        SCOREBOARD[room] = {}
     if winner not in SCOREBOARD[room]:
-        SCOREBOARD[room] = { winner: 1}
+        SCOREBOARD[room].update({winner:1})
     else:
         SCOREBOARD[room][winner] = SCOREBOARD[room][winner] + 1
     return SCOREBOARD
