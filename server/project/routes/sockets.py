@@ -3,6 +3,7 @@ from flask_socketio import join_room, leave_room, emit
 from project import socketio
 
 ROOMS = {}
+SCOREBOARD = {}
 
 @socketio.on('connect', namespace='/')
 def test_connect():
@@ -54,11 +55,12 @@ def start_game(data):
 @socketio.on('winner', namespace='/')
 def start_game(data):
     global ROOMS
+
     user = data['user']
     room = data['room']
     winner = data['winner']
-
-    emit('notify-winner', {'msg': winner}, room=room)
+    update_scoreboard(room, winner)
+    emit('notify-winner', {'msg': winner, 'scoreboard': SCOREBOARD[room]}, room=room)
     new_round(room)
 
 def create_room(room, user):
@@ -93,6 +95,15 @@ def user_leave_room(room, user):
     if user in ROOMS[room]["userNotJudge"]:
         ROOMS[room]["userNotJudge"].remove(user)
     leave_room(room)
+
+def update_scoreboard(room, winner):
+    global SCOREBOARD
+
+    if winner not in SCOREBOARD[room]:
+        SCOREBOARD[room] = { winner: 1}
+    else:
+        SCOREBOARD[room][winner] = SCOREBOARD[room][winner] + 1
+    return SCOREBOARD
 
 def room_user_turns(room):
     global ROOMS

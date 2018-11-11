@@ -21,7 +21,8 @@ class RoomScreen extends React.PureComponent {
     usedGifs: [],
     captain: "",
     userPick: {},
-    packet: {}
+    packet: {},
+    scoreboard: {}
   };
 
   componentDidMount() {
@@ -76,8 +77,10 @@ class RoomScreen extends React.PureComponent {
                     'id': newGif.id
                   })
                   new_hand = new_hand.filter((x) => x.id != this.state.userPick.id)
-                  this.setState({ hand: new_hand })
-                  this.setState({ userPick: {} })
+                  this.setState({ hand: new_hand });
+                  this.setState({ userPick: {} });
+                  this.setState({ scoreboard: data.scoreboard });
+                  console.log(this.state.scoreboard);
                 }
               }
             })
