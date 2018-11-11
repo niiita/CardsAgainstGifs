@@ -7,6 +7,7 @@ import { Redirect } from "react-router-dom";
 import CAHcard from "../../components/cards-against-humanity";
 import "../../index.css";
 import * as axios from "axios";
+import "./room-screen.css";
 
 class RoomScreen extends React.PureComponent {
   state = {
@@ -17,7 +18,7 @@ class RoomScreen extends React.PureComponent {
     listOfUsers: [],
     hand: [],
     usedGifs: [],
-    captain: '',
+    captain: "",
     packet: {}
   };
 
@@ -31,12 +32,12 @@ class RoomScreen extends React.PureComponent {
 
     this.postRequest(id, name);
 
-    socket.on("connect", function () {
+    socket.on("connect", function() {
       console.log("Websocket connected!");
     });
     socket.on("status", data => {
       console.log(data);
-      this.setState({packet: data.msg})
+      this.setState({ packet: data.msg });
       this.setState({
         listOfUsers: data.msg.listOfUsers
       });
@@ -81,7 +82,15 @@ class RoomScreen extends React.PureComponent {
     socket.emit("start", { room: id, user: name });
   }
   render() {
-    const { listOfUsers, usedGifs, hand, name, captain, started, packet } = this.state;
+    const {
+      listOfUsers,
+      usedGifs,
+      hand,
+      name,
+      captain,
+      started,
+      packet
+    } = this.state;
     return (
       <Section
         flexDirection="column"
@@ -105,22 +114,27 @@ class RoomScreen extends React.PureComponent {
                 listStyleType: "none"
               }}
             >
-              {listOfUsers && listOfUsers.map(x => <li key={x}>{x}</li>)}
+              {listOfUsers &&
+                listOfUsers.map(x => (
+                  <li key={x} className={packet.captain === x ? "captain" : ""}>
+                    {x}
+                  </li>
+                ))}
             </ul>
           </Section>
         </Section>
-        {!packet.started &&  <h3>waiting to start game...</h3>}
-        {
-          name === captain && !packet.started && <div>
+        {!packet.started && <h3>waiting to start game...</h3>}
+        {name === captain && !packet.started && (
+          <div>
             <Button
               variant="contained"
               color="secondary"
               onClick={() => this.startGame()}
             >
-            Start Game
+              Start Game
             </Button>
           </div>
-        }
+        )}
         {packet.started && <h3>Judge: {packet.judge}</h3>}
         {this.state.redirect && <Redirect to="/" />}
         <Section>
