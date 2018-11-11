@@ -48,12 +48,13 @@ def call_api():
     
     
 def setup_questions():
-    file = Path(__file__, "../externals/questions.txt").resolve()
-    with open(file, 'r') as f:
-        data = f.read().replace('\n', '')
-        print(data)
-        print("\n")
-        QUESTIONS.append(data)
+    import json
+    global QUESTIONS
+    file = Path(__file__, "../../project/externals/questions.json").resolve()
+    with open(file) as f:
+        data = json.load(f)
+    for q in data["question"]:
+        QUESTIONS.append(q['text'])
 
 	
 

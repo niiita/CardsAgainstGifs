@@ -118,9 +118,9 @@ def room_user_turns(room):
 def new_round(room):
     import project as gifs
     questions = gifs.QUESTIONS
-    r = random.Random(200)
+    r = random.randint(1,193)
     # new judge
-    ROOMS[room]['question'] = r.choice(questions)
+    ROOMS[room]['question'] = questions[r]
     ROOMS[room]['judge'] = room_user_turns(room)
     ROOMS[room]['gifPicks'] = {}
     emit('status', {'msg': ROOMS[room]}, room=room)
