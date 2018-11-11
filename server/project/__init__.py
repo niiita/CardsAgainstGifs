@@ -2,9 +2,11 @@ import os
 from flask import Flask
 from flask_cors import CORS
 from flask_socketio import SocketIO
+from pathlib import Path
 
 
 GIPHY_STORE = {}
+QUESTIONS = []
 
 # setup extensions
 socketio = SocketIO()
@@ -18,6 +20,8 @@ def create_app(script_info=None):
     # setup extensions
     socketio.init_app(app)
 
+    
+    setup_questions()
     call_api()
     return app
 
@@ -41,4 +45,16 @@ def call_api():
 
     for gif in response["data"]:
         GIPHY_STORE[gif['id']] = gif['embed_url']
+    
+    
+def setup_questions():
+    file = Path(__file__, "../externals/questions.txt").resolve()
+    with open(file, 'r') as f:
+        data = f.read().replace('\n', '')
+        print(data)
+        print("\n")
+        QUESTIONS.append(data)
 
+	
+
+   

@@ -35,8 +35,9 @@ class CAHcard extends React.Component {
         <Card line={this.props.line}>
           <CardContent>
             <Typography variant="h5" component="h2" className="square">
-              Random prompt retrieving function (from
-              cards-against-humanity.txt)
+              {
+                this.props.question
+              }
             </Typography>
           </CardContent>
         </Card>

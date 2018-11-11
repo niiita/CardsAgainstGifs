@@ -1,3 +1,22 @@
 .captain {
   background-color: darkgrey;
 }
+
+.iframe__container {
+  position:relative;
+  float:left;
+}
+
+.overlay {
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  position:absolute;
+}
+
+.picked {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+  opacity: 0.3;
+}

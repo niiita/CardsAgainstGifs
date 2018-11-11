@@ -1,6 +1,7 @@
 import random
 import string
 from flask import Blueprint, jsonify, request
+from project import socketio
 
 api_bp = Blueprint('api', __name__, url_prefix='/api')
 
@@ -32,7 +33,6 @@ def join_room():
     response = request.json
     room = response['room']
     user = response['user']
-
     if room not in socket_global.ROOMS:
         create_room(room, user)
     if user in socket_global.ROOMS[room]['listOfUsers']:
@@ -51,6 +51,26 @@ def join_room():
             print(msg)
 
         return jsonify({'error': '', 'gifs': list_gifs})
+
+
+@api_bp.route('/room/select', methods=["POST"])
+def user_select():
+
+    import project.routes.sockets as socket_global
+
+    try: 
+        response = request.json
+        room = response['room']
+        user = response['user']
+        gif = response['gif']
+
+        socket_global.ROOMS[room]['gifPicks'][user] = gif
+        socketio.emit('status', {'msg': socket_global.ROOMS[room]}, room=room)
+        return jsonify({'error': '', 'selectedGif': gif})
+    except Exception as msg:
+        print(msg)
+        return jsonify({'error': 'cannot post', 'selectedGif': ''})
+
 
 def create_unique_room():
     global UNIQUE_ROOMS

@@ -8,6 +8,7 @@ import CAHcard from "../../components/cards-against-humanity";
 import "../../index.css";
 import * as axios from "axios";
 import "./room-screen.css";
+import Swal from 'sweetalert2'
 
 class RoomScreen extends React.PureComponent {
   state = {
@@ -19,6 +20,7 @@ class RoomScreen extends React.PureComponent {
     hand: [],
     usedGifs: [],
     captain: "",
+    userPick: '',
     packet: {}
   };
 
@@ -32,12 +34,12 @@ class RoomScreen extends React.PureComponent {
 
     this.postRequest(id, name);
 
-    socket.on("connect", function() {
+    socket.on("connect", function () {
       console.log("Websocket connected!");
     });
     socket.on("status", data => {
-      console.log(data);
       this.setState({ packet: data.msg });
+      console.log(this.state.packet);
       this.setState({
         listOfUsers: data.msg.listOfUsers
       });
@@ -45,6 +47,9 @@ class RoomScreen extends React.PureComponent {
         captain: data.msg.captain
       });
     });
+    socket.on('notify-winner', data => {
+      Swal(`Winner is ${data.msg}!`)
+    })
   }
 
   postRequest(id, name) {
@@ -58,7 +63,6 @@ class RoomScreen extends React.PureComponent {
           alert(response.data.error);
         } else {
           this.setState({ hand: response.data.gifs });
-          console.log(this.state.hand);
           this.state.socket.emit("join", { room: id, user: name });
         }
       })
@@ -67,9 +71,6 @@ class RoomScreen extends React.PureComponent {
       });
   }
 
-  handleStatus(msg) {
-    this.setState({ ...this.state, listOfUsers: msg });
-  }
   leaveRoom() {
     const { socket, id, name } = this.state;
     socket.emit("leave", { room: id, user: name });
@@ -81,15 +82,58 @@ class RoomScreen extends React.PureComponent {
     const { socket, id, name } = this.state;
     socket.emit("start", { room: id, user: name });
   }
+
+  selectOption(gif) {
+    const { id, name } = this.state
+    axios
+      .post("http://localhost:5000/api/room/select", {
+        room: id,
+        user: name,
+        gif: gif
+      })
+      .then(response => {
+        if (response.data.error.length > 0) {
+          alert(response.data.error);
+        } else {
+          this.setState({ 'userPick': response.data.selectedGif })
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  }
+
+  pickWinner(winner) {
+    const { id, name } = this.state
+    Swal({
+      title: 'Are you sure?',
+      type: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes!'
+    }).then((result) => {
+      if (result.value) {
+        this.state.socket.emit("winner", { room: id, user: name, winner: winner });
+        // swal(
+        //   'Deleted!',
+        //   'Your file has been deleted.',
+        //   'success'
+        // )
+      }
+    })
+  }
   render() {
     const {
+      id,
       listOfUsers,
       usedGifs,
       hand,
       name,
       captain,
       started,
-      packet
+      packet,
+      userPick
     } = this.state;
     return (
       <Section
@@ -104,21 +148,38 @@ class RoomScreen extends React.PureComponent {
             <h2
               style={{
                 textAlign: "right",
-                margin: 0
+                margin: "15px 0px 0px 0px"
+              }}
+            >
+              ROOM: {id}
+            </h2>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => this.leaveRoom()}
+            >
+              Leave
+            </Button>
+            <h3
+              style={{
+                textAlign: "right",
+                margin: "15px 0px 0px 0px"
               }}
             >
               Users
-            </h2>
+            </h3>
             <ul
               style={{
-                listStyleType: "none"
+                listStyleType: "none",
+                textAlign: "right",
               }}
             >
               {listOfUsers &&
                 listOfUsers.map(x => (
-                  <li key={x} className={packet.captain === x ? "captain" : ""}>
-                    {x}
-                  </li>
+                  packet.captain === x ? 
+                    <li key={x} className="captain">{x} (captain)</li>
+                    :
+                    <li key={x}>{x}</li>
                 ))}
             </ul>
           </Section>
@@ -135,29 +196,61 @@ class RoomScreen extends React.PureComponent {
             </Button>
           </div>
         )}
-        {packet.started && <h3>Judge: {packet.judge}</h3>}
         {this.state.redirect && <Redirect to="/" />}
-        <Section>
+        {packet.started && <h3>Judge: {packet.judge}</h3>}
+
+        {packet.started && name !== packet.judge && (
           <div>
-            <CAHcard>random prompt</CAHcard>
+            <Section justifyContent="center">
+              <div>
+                <CAHcard question={packet.question}></CAHcard>
+              </div>
+            </Section>
+            <Section
+              flexDirection="horizontal"
+              flexWrap="wrap"
+              justifyContent="space-evenly"
+              style={{ paddingTop: "25px" }}
+            >
+              {hand.map(x => {
+                return (
+                  <div key={x.id} className={userPick.id === x.id ? 'iframe__container picked' : 'iframe__container'} onClick={() => this.selectOption(x)}>
+                    <IFrame src={x.gif} />
+                    <div className="overlay"></div>
+                  </div>
+                )
+              })}
+            </Section>
           </div>
-        </Section>
-        <Section
-          flexDirection="horizontal"
-          flexWrap="wrap"
-          justifyContent="space-evenly"
-        >
-          {hand.map(x => {
-            return <IFrame key={x.id} src={x.gif} />;
-          })}
-        </Section>
-        <Button
-          variant="contained"
-          color="primary"
-          onClick={() => this.leaveRoom()}
-        >
-          Leave
-        </Button>
+        )}
+
+
+        {packet.started && name === packet.judge && (
+          <div>
+            <Section>
+              <div>
+                <CAHcard question={packet.question}></CAHcard>
+              </div>
+            </Section>
+            <Section
+              flexDirection="horizontal"
+              flexWrap="wrap"
+              justifyContent="space-evenly"
+              style={{ paddingTop: "25px" }}
+            >
+
+              {Object.keys(packet.gifPicks).map(x => {
+                return (
+                  <div className='iframe__container' onClick={() => this.pickWinner(x)}>
+                    <IFrame key={packet.gifPicks[x].id} src={packet.gifPicks[x].gif} />
+                    <div className="overlay"></div>
+                  </div>
+                )
+              })}
+            </Section>
+          </div>
+        )}
+
       </Section>
     );
   }

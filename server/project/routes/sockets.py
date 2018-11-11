@@ -1,3 +1,4 @@
+import random
 from flask_socketio import join_room, leave_room, emit
 from project import socketio
 
@@ -47,9 +48,18 @@ def start_game(data):
 
     # TODO check if the user is the captain
     ROOMS[room]['started'] = True
-    ROOMS[room]['judge'] = room_user_turns(room)
-    emit('status', {'msg': ROOMS[room]}, room=room)
+    new_round(room)
 
+
+@socketio.on('winner', namespace='/')
+def start_game(data):
+    global ROOMS
+    user = data['user']
+    room = data['room']
+    winner = data['winner']
+
+    emit('notify-winner', {'msg': winner}, room=room)
+    new_round(room)
 
 def create_room(room, user):
     global ROOMS
@@ -58,6 +68,7 @@ def create_room(room, user):
     all_gifs = gifs.GIPHY_STORE
 
     ROOMS[room] = {
+        'question': '',
         'captain': user,
         'listOfUsers': [],
         'started': False,
@@ -66,7 +77,8 @@ def create_room(room, user):
         'usedGifs': [],
         'round': 0,
         'userNotJudge': [],
-        'userWasJudge': []
+        'userWasJudge': [],
+        'gifPicks': {}
     }
 
 def user_join_room(room, user):
@@ -91,6 +103,16 @@ def room_user_turns(room):
 
     ROOMS[room]['userWasJudge'].append(user_to_judge)
     return user_to_judge
+
+def new_round(room):
+    import project as gifs
+    questions = gifs.QUESTIONS
+    r = random.Random(200)
+    # new judge
+    ROOMS[room]['question'] = r.choice(questions)
+    ROOMS[room]['judge'] = room_user_turns(room)
+    ROOMS[room]['gifPicks'] = {}
+    emit('status', {'msg': ROOMS[room]}, room=room)
 
 
 def print_rooms():
