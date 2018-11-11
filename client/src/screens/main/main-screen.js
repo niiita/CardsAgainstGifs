@@ -32,7 +32,7 @@ class MainScreen extends React.PureComponent {
         }}
         alignItems="center"
       >
-        <h2>Cards against Gifs</h2>
+        <h2>GIFS Against Humanity</h2>
         <hr
           style={{
             width: "80%",

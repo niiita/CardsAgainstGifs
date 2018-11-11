@@ -8,7 +8,8 @@ import Section from "../section";
 
 const styles = {
   card: {
-    minWidth: 275
+    minWidth: 275,
+    backgroundColor: "black"
   },
   bullet: {
     display: "inline-block",
@@ -32,12 +33,23 @@ class CAHcard extends React.Component {
   render() {
     return (
       <Section>
-        <Card line={this.props.line}>
+        <Card
+          line={this.props.line}
+          style={{
+            backgroundColor: "black",
+            color: "white"
+          }}
+        >
           <CardContent>
-            <Typography variant="h5" component="h2" className="square">
-              {
-                this.props.question
-              }
+            <Typography
+              variant="h5"
+              component="h2"
+              className="square"
+              style={{
+                color: "white"
+              }}
+            >
+              {this.props.question}
             </Typography>
           </CardContent>
         </Card>
