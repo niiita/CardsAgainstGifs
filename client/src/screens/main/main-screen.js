@@ -5,8 +5,6 @@ import CreateRoom from "../../components/create-room";
 import JoinRoom from "../../components/join-room";
 import { Button } from "@material-ui/core";
 
-import CAHcard from "../../components/cards-against-humanity";
-
 class MainScreen extends React.PureComponent {
   state = {
     option: ""

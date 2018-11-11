@@ -82,7 +82,14 @@ class RoomScreen extends React.PureComponent {
       >
         <Section flexDirection="row" justifyContent="flex-end" width="100%">
           <Section flexDirection="column">
-            <h4>Users</h4>
+            <h2
+              style={{
+                textAlign: "right",
+                margin: 0
+              }}
+            >
+              Users
+            </h2>
             <ul
               style={{
                 listStyleType: "none"
