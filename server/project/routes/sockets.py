@@ -67,11 +67,15 @@ def on_leave(data):
 def create_room(room, user):
     global ROOMS
 
+    import project as gifs
+    all_gifs = gifs.GIPHY_STORE
+
     ROOMS[room] = {
         'captain': user,
         'listOfUsers': [],
         'started': False,
-        'listOfCards': [],
+        'availableGifs': all_gifs,
+        'usedGifs': [],
         'round': 0
     }
 
