@@ -32,11 +32,11 @@ class MainScreen extends React.PureComponent {
         }}
         alignItems="center"
       >
-        <header>Welcome to Gifs Against Humanity :)</header>
+        <h2>Cards against Gifs</h2>
         <hr
           style={{
             width: "80%",
-            color: "blue"
+            color: "darkblue"
           }}
         />
         {this.rendering()}

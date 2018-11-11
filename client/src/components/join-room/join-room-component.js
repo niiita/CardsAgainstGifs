@@ -47,7 +47,7 @@ class JoinRoomComponent extends React.Component {
       return <Redirect to={`/room?id=${roomID}`} />;
     }
     return (
-      <Section>
+      <Section flexWrap="wrap">
         <TextField
           id="name"
           label="Name"
