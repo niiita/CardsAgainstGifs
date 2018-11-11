@@ -1,10 +1,27 @@
 import * as React from "react";
 import Section from "../../components/section";
-import Button from "../../components/button";
-import IFrame from "../../components/card-gif";
-import CAHcard from "../../components/cards-against-humanity";
+
+import CreateRoom from "../../components/create-room";
+import JoinRoom from "../../components/join-room";
 
 class MainScreen extends React.PureComponent {
+  state = {
+    option: ""
+  };
+
+  toggle(name) {
+    this.setState({ option: name });
+  }
+
+  rendering() {
+    if (this.state.option === "") {
+      return <div />;
+    } else if (this.state.option === "join") {
+      return <JoinRoom />;
+    } else {
+      return <CreateRoom />;
+    }
+  }
   render() {
     return (
       <Section
@@ -14,23 +31,10 @@ class MainScreen extends React.PureComponent {
         }}
         alignItems="center"
       >
-        <CAHcard line="some random card" />
-        <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
         <header>Welcome to Gifs Against Humanity :)</header>
-        <form>
-          <label>
-            Name: <input type="text" name="name" />
-            <br />
-            Room: <input type="text" name="name" />
-          </label>
-        </form>
-
-        <Button title="Create New Game" color="yellow">
-          CREATE NEW GAME!
-        </Button>
-        <Button title="Join a Game" color="yellow">
-          JOIN A GAME!
-        </Button>
+        <button onClick={() => this.toggle("join")}>Join Game</button>
+        <button onClick={() => this.toggle("create")}>Create Game</button>
+        {this.rendering()}
       </Section>
     );
   }

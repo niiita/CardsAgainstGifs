@@ -3,6 +3,11 @@ import Section from "../../components/section";
 import IFrame from "../../components/card-gif";
 
 class RoomScreen extends React.PureComponent {
+  componentDidMount() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const id = urlParams.get("id");
+    console.log(id);
+  }
   render() {
     return (
       <Section
