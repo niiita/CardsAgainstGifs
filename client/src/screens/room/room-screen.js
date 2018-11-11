@@ -16,7 +16,9 @@ class RoomScreen extends React.PureComponent {
     redirect: false,
     listOfUsers: [],
     hand: [],
-    usedGifs: []
+    usedGifs: [],
+    captain: '',
+    packet: {}
   };
 
   componentDidMount() {
@@ -29,13 +31,17 @@ class RoomScreen extends React.PureComponent {
 
     this.postRequest(id, name);
 
-    socket.on("connect", function() {
+    socket.on("connect", function () {
       console.log("Websocket connected!");
     });
     socket.on("status", data => {
       console.log(data);
+      this.setState({packet: data.msg})
       this.setState({
         listOfUsers: data.msg.listOfUsers
+      });
+      this.setState({
+        captain: data.msg.captain
       });
     });
   }
@@ -70,8 +76,12 @@ class RoomScreen extends React.PureComponent {
       redirect: true
     });
   }
+  startGame() {
+    const { socket, id, name } = this.state;
+    socket.emit("start", { room: id, user: name });
+  }
   render() {
-    const { listOfUsers, usedGifs, hand } = this.state;
+    const { listOfUsers, usedGifs, hand, name, captain, started, packet } = this.state;
     return (
       <Section
         flexDirection="column"
@@ -92,7 +102,19 @@ class RoomScreen extends React.PureComponent {
             </ul>
           </Section>
         </Section>
-        <h3>Hand</h3>
+        {!packet.started &&  <h3>waiting to start game...</h3>}
+        {
+          name === captain && !packet.started && <div>
+            <Button
+              variant="contained"
+              color="secondary"
+              onClick={() => this.startGame()}
+            >
+            Start Game
+            </Button>
+          </div>
+        }
+        {packet.started && <h3>Judge: {packet.judge}</h3>}
         {this.state.redirect && <Redirect to="/" />}
         <Section>
           <div>
