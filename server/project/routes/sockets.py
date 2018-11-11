@@ -62,8 +62,9 @@ def start_game(data):
     user = data['user']
     room = data['room']
     winner = data['winner']
+    gif = data['gif']
     update_scoreboard(room, winner)
-    emit('notify-winner', {'msg': winner, 'scoreboard': SCOREBOARD[room]}, room=room)
+    emit('notify-winner', {'msg': winner, 'scoreboard': SCOREBOARD[room], 'winGif': gif}, room=room)
     new_round(room)
 
 def create_room(room, user):

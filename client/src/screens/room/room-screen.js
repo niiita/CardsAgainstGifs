@@ -54,6 +54,9 @@ class RoomScreen extends React.PureComponent {
     socket.on("notify-winner", data => {
       Swal({
         title: `Winner is ${data.msg}!`,
+        html: `<iframe src=${
+          data.winGif.gif
+        } height="250px" width="250px"></iframe>`,
         showCancelButton: false,
         confirmButtonColor: "#3085d6",
         cancelButtonColor: "#d33",
@@ -150,7 +153,7 @@ class RoomScreen extends React.PureComponent {
       });
   }
 
-  pickWinner(winner) {
+  pickWinner(winner, gif) {
     const { id, name } = this.state;
     Swal({
       title: "Are you sure?",
@@ -164,7 +167,8 @@ class RoomScreen extends React.PureComponent {
         this.state.socket.emit("winner", {
           room: id,
           user: name,
-          winner: winner
+          winner: winner,
+          gif: gif
         });
       }
     });
@@ -341,7 +345,7 @@ class RoomScreen extends React.PureComponent {
                 return (
                   <div
                     className="iframe__container"
-                    onClick={() => this.pickWinner(x)}
+                    onClick={() => this.pickWinner(x, packet.gifPicks[x])}
                   >
                     <IFrame
                       key={packet.gifPicks[x].id}
