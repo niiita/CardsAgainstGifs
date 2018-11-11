@@ -43,10 +43,10 @@ class CreateRoomComponent extends React.Component {
   }
 
   render() {
-    const { redirect, roomID } = this.state;
+    const { name, redirect, roomID } = this.state;
     const { classes } = this.props;
     if (redirect) {
-      return <Redirect to={`/room?id=${roomID}`} />;
+      return <Redirect to={`/room?id=${roomID}&name=${name}`} />;
     }
     return (
       <Section>
