@@ -66,7 +66,6 @@ class MainScreen extends React.PureComponent {
           >
             Create Game
           </Button>
-
         </Section>
       </Section>
     );

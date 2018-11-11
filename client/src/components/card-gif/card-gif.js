@@ -12,6 +12,9 @@ class IFrame extends React.Component {
         <iframe
           title="1"
           src={this.props.src}
+          style={{
+            border: "0"
+          }}
           height={
             this.props.height ? this.props.height : this.state.defaultHeight
           }

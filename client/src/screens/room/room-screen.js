@@ -5,7 +5,7 @@ import socketIOClient from "socket.io-client";
 import { Button } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import CAHcard from "../../components/cards-against-humanity";
-import '../../index.css';
+import "../../index.css";
 import * as axios from "axios";
 
 class RoomScreen extends React.PureComponent {
@@ -73,7 +73,6 @@ class RoomScreen extends React.PureComponent {
   render() {
     const { listOfUsers, usedGifs, hand } = this.state;
     return (
-     
       <Section
         flexDirection="column"
         style={{
@@ -81,47 +80,42 @@ class RoomScreen extends React.PureComponent {
         }}
         alignItems="center"
       >
-        room: <br/>
-        {listOfUsers && listOfUsers}
-        <br />
+        <Section flexDirection="row" justifyContent="flex-end" width="100%">
+          <Section flexDirection="column">
+            <h4>Users</h4>
+            <ul
+              style={{
+                listStyleType: "none"
+              }}
+            >
+              {listOfUsers && listOfUsers.map(x => <li key={x}>{x}</li>)}
+            </ul>
+          </Section>
+        </Section>
         <h3>Hand</h3>
-        <ul>
-          {hand.map(x => {
-            return (
-              <li key={x.id}>
-                {x.id} {x.gif}
-              </li>
-            );
-          })}
-        </ul>
         {this.state.redirect && <Redirect to="/" />}
         <Section>
-          
           <div>
-          <CAHcard>
-            random prompt
-          </CAHcard>
+            <CAHcard>random prompt</CAHcard>
           </div>
-          
         </Section>
-        
-       <Section class="flexWrap">
-          <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
-          <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
-          <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
-          <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
-          <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
-          </Section>
-
-      
-      <Button
-        variant="contained"
-        color="primary"
-        onClick={() => this.leaveRoom()}
-      >
-        Leave
-      </Button>
-   </Section>
+        <Section
+          flexDirection="horizontal"
+          flexWrap="wrap"
+          justifyContent="space-evenly"
+        >
+          {hand.map(x => {
+            return <IFrame key={x.id} src={x.gif} />;
+          })}
+        </Section>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={() => this.leaveRoom()}
+        >
+          Leave
+        </Button>
+      </Section>
     );
   }
 }
