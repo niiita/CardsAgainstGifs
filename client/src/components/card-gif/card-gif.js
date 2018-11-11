@@ -3,8 +3,8 @@ import Section from "../section";
 
 class IFrame extends React.Component {
   state = {
-    defaultHeight: "500px",
-    defaultWidth: "500px"
+    defaultHeight: "250px",
+    defaultWidth: "250px"
   };
   render() {
     return (
