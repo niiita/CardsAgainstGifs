@@ -45,7 +45,7 @@ def on_join(data):
     # room hasn't started yet
     if room not in ROOMS:
         create_room(room, user)
-    if user in ROOMS[room]:
+    if user in ROOMS[room]['listOfUsers']:
         print("very bad")
     else:
         user_join_room(room, user)
@@ -57,8 +57,8 @@ def on_leave(data):
     user = data['user']
     room = data['room']
 
-    if room in ROOMS and user in ROOMS[room]:
-        leave_room(room, user)
+    if room in ROOMS and user in ROOMS[room]['listOfUsers']:
+        user_leave_room(room, user)
         emit('status', {'msg': ROOMS[room]}, room=room)
     else:
         print("very bad")
@@ -67,11 +67,15 @@ def on_leave(data):
 def create_room(room, user):
     global ROOMS
 
+    import project as gifs
+    all_gifs = gifs.GIPHY_STORE
+
     ROOMS[room] = {
         'captain': user,
         'listOfUsers': [],
         'started': False,
-        'listOfCards': [],
+        'availableGifs': all_gifs,
+        'usedGifs': [],
         'round': 0
     }
 

@@ -6,6 +6,7 @@ import { Button } from "@material-ui/core";
 import { Redirect } from "react-router-dom";
 import CAHcard from "../../components/cards-against-humanity";
 import '../../index.css';
+import * as axios from "axios";
 
 class RoomScreen extends React.PureComponent {
   state = {
@@ -13,7 +14,9 @@ class RoomScreen extends React.PureComponent {
     name: "",
     socket: socketIOClient("http://127.0.0.1:5000/"),
     redirect: false,
-    listOfUsers: []
+    listOfUsers: [],
+    hand: [],
+    usedGifs: []
   };
 
   componentDidMount() {
@@ -24,6 +27,8 @@ class RoomScreen extends React.PureComponent {
     this.setState({ id: id });
     this.setState({ name: name });
 
+    this.postRequest(id, name);
+
     socket.on("connect", function() {
       console.log("Websocket connected!");
     });
@@ -33,8 +38,26 @@ class RoomScreen extends React.PureComponent {
         listOfUsers: data.msg.listOfUsers
       });
     });
+  }
 
-    socket.emit("join", { room: id, user: name });
+  postRequest(id, name) {
+    axios
+      .post("http://localhost:5000/api/room/join", {
+        room: id,
+        user: name
+      })
+      .then(response => {
+        if (response.data.error.length > 0) {
+          alert(response.data.error);
+        } else {
+          this.setState({ hand: response.data.gifs });
+          console.log(this.state.hand);
+          this.state.socket.emit("join", { room: id, user: name });
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
   }
 
   handleStatus(msg) {
@@ -48,7 +71,7 @@ class RoomScreen extends React.PureComponent {
     });
   }
   render() {
-    const { listOfUsers } = this.state;
+    const { listOfUsers, usedGifs, hand } = this.state;
     return (
      
       <Section
@@ -60,6 +83,17 @@ class RoomScreen extends React.PureComponent {
       >
         room: <br/>
         {listOfUsers && listOfUsers}
+        <br />
+        <h3>Hand</h3>
+        <ul>
+          {hand.map(x => {
+            return (
+              <li key={x.id}>
+                {x.id} {x.gif}
+              </li>
+            );
+          })}
+        </ul>
         {this.state.redirect && <Redirect to="/" />}
         <Section>
           
