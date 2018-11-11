@@ -3,6 +3,7 @@ import Section from "../../components/section";
 
 import CreateRoom from "../../components/create-room";
 import JoinRoom from "../../components/join-room";
+import { Button } from "@material-ui/core";
 
 class MainScreen extends React.PureComponent {
   state = {
@@ -31,10 +32,39 @@ class MainScreen extends React.PureComponent {
         }}
         alignItems="center"
       >
-        <header>Welcome to Gifs Against Humanity :)</header>
-        <button onClick={() => this.toggle("join")}>Join Game</button>
-        <button onClick={() => this.toggle("create")}>Create Game</button>
+        <h2>Cards against Gifs</h2>
+        <hr
+          style={{
+            width: "80%",
+            color: "darkblue"
+          }}
+        />
         {this.rendering()}
+        <Section
+          flexDirection="row"
+          style={{
+            padding: "30px"
+          }}
+          alignItems="center"
+        >
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => this.toggle("join")}
+            style={{
+              margin: "3px"
+            }}
+          >
+            Join Game
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => this.toggle("create")}
+          >
+            Create Game
+          </Button>
+        </Section>
       </Section>
     );
   }

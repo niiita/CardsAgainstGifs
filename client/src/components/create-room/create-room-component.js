@@ -1,8 +1,27 @@
 import * as React from "react";
+import * as axios from "axios";
+import { TextField, Button } from "@material-ui/core";
+import { withStyles } from "@material-ui/core/styles";
+import { Redirect } from "react-router";
 import Section from "../../components/section";
 
-import * as axios from "axios";
-import { Redirect } from "react-router";
+const styles = theme => ({
+  container: {
+    display: "flex",
+    flexWrap: "wrap"
+  },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+    width: 200
+  },
+  dense: {
+    marginTop: 19
+  },
+  menu: {
+    width: 200
+  }
+});
 
 class CreateRoomComponent extends React.Component {
   state = {
@@ -22,23 +41,38 @@ class CreateRoomComponent extends React.Component {
       this.setState({ redirect: true });
     });
   }
+
   render() {
     const { redirect, roomID } = this.state;
-
+    const { classes } = this.props;
     if (redirect) {
       return <Redirect to={`/room?id=${roomID}`} />;
     }
     return (
       <Section>
-        <input
-          type="text"
+        <TextField
+          id="name"
+          label="Name"
+          className={classes.textField}
           value={this.state.name}
           onChange={event => this.handleChange(event)}
+          margin="normal"
         />
-        <button onClick={() => this.submit()}>Submit</button>
+        <Button
+          variant="outlined"
+          color="secondary"
+          onClick={() => this.submit()}
+          size="small"
+          style={{
+            margin: "auto",
+            height: "10px"
+          }}
+        >
+          Submit
+        </Button>
       </Section>
     );
   }
 }
 
-export default CreateRoomComponent;
+export default withStyles(styles)(CreateRoomComponent);
