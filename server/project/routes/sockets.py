@@ -1,39 +1,15 @@
 from flask_socketio import join_room, leave_room, emit
 from project import socketio
 
-"""
-{
-    '12ju2': [chris, kevin],
-    '2312a': ['rob', 'ben']
-}
-
-{
-    'awdada':{
-        'captain': user
-        'listOfUsers: [chris,adad,ada]
-        'round': 1,
-        'started: true,
-        'room': adada,
-    }
-
-}
-
-{
-    'listOfGifs': [],
-    'used': []
-}
-"""
 ROOMS = {}
 
 @socketio.on('connect', namespace='/')
 def test_connect():
     print('Client connect')
 
-
 @socketio.on('disconnect', namespace='/')
 def test_disconnect():
     print('Client disconnected')
-
 
 @socketio.on('join', namespace='/')
 def on_join(data):
@@ -63,6 +39,17 @@ def on_leave(data):
     else:
         print("very bad")
 
+@socketio.on('start', namespace='/')
+def start_game(data):
+    global ROOMS
+    user = data['user']
+    room = data['room']
+
+    # TODO check if the user is the captain
+    ROOMS[room]['started'] = True
+    ROOMS[room]['judge'] = room_user_turns(room)
+    emit('status', {'msg': ROOMS[room]}, room=room)
+
 
 def create_room(room, user):
     global ROOMS
@@ -74,20 +61,37 @@ def create_room(room, user):
         'captain': user,
         'listOfUsers': [],
         'started': False,
+        'judge': '',
         'availableGifs': all_gifs,
         'usedGifs': [],
-        'round': 0
+        'round': 0,
+        'userNotJudge': [],
+        'userWasJudge': []
     }
 
 def user_join_room(room, user):
     global ROOMS
     ROOMS[room]["listOfUsers"].append(user)
+    ROOMS[room]["userNotJudge"].append(user)
     join_room(room)
 
 def user_leave_room(room, user):
     global ROOMS
     ROOMS[room]["listOfUsers"].remove(user)
+    if user in ROOMS[room]["userNotJudge"]:
+        ROOMS[room]["userNotJudge"].remove(user)
     leave_room(room)
+
+def room_user_turns(room):
+    global ROOMS
+
+    if len(ROOMS[room]['userNotJudge']) == 0:
+        ROOMS[room]['userNotJudge'] = ROOMS[room]['userWasJudge']
+    user_to_judge = ROOMS[room]['userNotJudge'].pop(0)
+
+    ROOMS[room]['userWasJudge'].append(user_to_judge)
+    return user_to_judge
+
 
 def print_rooms():
     global ROOMS
