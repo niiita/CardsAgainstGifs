@@ -1,4 +1,4 @@
-# CardsAgainstGifs
+# GIFS Against Humanity
 Giphy version of cards against humanity ;)
 
 This project was made for the BostonHacks2018 Giphy challenge.
