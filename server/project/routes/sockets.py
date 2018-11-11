@@ -45,7 +45,7 @@ def on_join(data):
     # room hasn't started yet
     if room not in ROOMS:
         create_room(room, user)
-    if user in ROOMS[room]:
+    if user in ROOMS[room]['listOfUsers']:
         print("very bad")
     else:
         user_join_room(room, user)
@@ -57,7 +57,7 @@ def on_leave(data):
     user = data['user']
     room = data['room']
 
-    if room in ROOMS and user in ROOMS[room]:
+    if room in ROOMS and user in ROOMS[room]['listOfUsers']:
         user_leave_room(room, user)
         emit('status', {'msg': ROOMS[room]}, room=room)
     else:
