@@ -9,6 +9,7 @@ UNIQUE_ROOMS = []
 @api_bp.route('/room/create', methods=["GET"])
 def get_room():
     id = create_unique_room()
+    print(id)
     return jsonify({'room':id, 'error': ''})
 
 

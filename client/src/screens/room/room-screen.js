@@ -1,12 +1,31 @@
 import * as React from "react";
 import Section from "../../components/section";
 import IFrame from "../../components/card-gif";
+import socketIOClient from "socket.io-client";
 
 class RoomScreen extends React.PureComponent {
+
+  state = {
+    id: '',
+    endpoint: "http://127.0.0.1:5000/"
+  }
+
   componentDidMount() {
     const urlParams = new URLSearchParams(window.location.search);
     const id = urlParams.get("id");
-    console.log(id);
+    this.setState({ id: id })
+
+    const { endpoint } = this.state;
+    const socket = socketIOClient(endpoint);
+    socket.on('connect', function () {
+      console.log('Websocket connected!');
+    });
+    socket.on('status', function (msg) {
+      console.log(msg);
+    });
+
+    socket.emit('join', { 'room': id });
+
   }
   render() {
     return (
@@ -17,11 +36,7 @@ class RoomScreen extends React.PureComponent {
         }}
         alignItems="center"
       >
-        <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
-        <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
-        <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
-        <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
-        <IFrame src="https://giphy.com/embed/1esph7X7LV6Xqb4pT2" />
+        room
       </Section>
     );
   }
